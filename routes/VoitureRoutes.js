@@ -15,11 +15,11 @@ const Multer = multer({
 })
 
 
-router.post('/addvoiture/:id',Multer.fields([
+router.post('/addvoiture/:id',function(req, res){Multer.fields([
     { name: "cartegrise", maxCount: 1  },
     { name: "assurance", maxCount: 1  },
   
-  ]),UploadImage,VoitureCon.addvoiture)
+  ]),UploadImage,VoitureCon.addvoiture})
 
   router.get('/getvoi/:id', VoitureCon.getBychauff);
   module.exports = router

@@ -2,7 +2,6 @@
 var admin = require("firebase-admin");
 
 var serviceAccount = require("../firebase-key.json");
-
 const BUCKET ="imagestor-768b5.appspot.com"
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -56,5 +55,5 @@ const UploadImage = (req, res, next) => {
         next();
       });
   };
-  
+
 module.exports = UploadImage;

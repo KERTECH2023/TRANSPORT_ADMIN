@@ -43,7 +43,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 const corsOptions ={
-  origin:'https://frontwebpfe.vercel.app', 
+  origin:'http://localhost:3008', 
   // origin:'http://localhost:3000', 
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200
@@ -74,7 +74,7 @@ app.use(function(req, res, next) {
 });
 
 // error handler
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3005
 
 app.listen(PORT,  ()=> {
     console.log(`Server up and running on port ${PORT}`)

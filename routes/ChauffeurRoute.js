@@ -24,25 +24,25 @@ const Multer = multer({
 
 router.delete('/destroychauff/:id', ChauffContro.destroy);
  
-// router.post('/AjoutChauf',Multer.single("photoAvatar"),UploadImage,ChauffContro.register)
 
+
+// Use Multer middleware for file upload
 router.post('/AjoutChauf',Multer.fields([
+  { name: "photoAvatar", maxCount: 1 },
+  { name: "photoPermisRec", maxCount: 1 },
+  { name: "photoPermisVer", maxCount: 1 },
+  { name: "photoVtc", maxCount: 1 },
+  { name: "photoCin", maxCount: 1 },
+]), UploadImage,  ChauffContro.register
+);
+router.put('/updatechauf/:id',function(req, res){Multer.fields([
   { name: "photoAvatar", maxCount: 1  },
   { name: "photoPermisRec", maxCount: 1  },
   { name: "photoPermisVer", maxCount: 1  },
   { name: "photoVtc", maxCount: 1  },
   { name: "photoCin", maxCount: 1  },
 
-]),UploadImage,ChauffContro.register)
-
-router.put('/updatechauf/:id',Multer.fields([
-  { name: "photoAvatar", maxCount: 1  },
-  { name: "photoPermisRec", maxCount: 1  },
-  { name: "photoPermisVer", maxCount: 1  },
-  { name: "photoVtc", maxCount: 1  },
-  { name: "photoCin", maxCount: 1  },
-
-]),UploadImage,ChauffContro.update)
+]),UploadImage,ChauffContro.update})
 
 
 router.post('/loginch',ChauffContro.login)

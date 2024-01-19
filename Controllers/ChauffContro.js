@@ -3,8 +3,10 @@ const bcrypt  =require('bcryptjs')
 const config = require("../config.json");
 const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
+// const {  createUserWithEmailAndPassword  } = require ('firebase/auth');
 
-
+//const firebaseModule = require("../services/firebase");
+//const auth = firebaseModule.auth;
 
 /**--------------------Ajouter un agnet------------------------  */
 
@@ -73,8 +75,23 @@ const register = async (req, res) => {
     // Save the new user to the database
     try {
       await nouveauUtilisateur.save();
-
-      
+///
+/*
+await createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+            // Signed in
+            const user = userCredential.user;
+            console.log(user);
+            //navigate("/login")
+            // ...
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+            console.log(errorCode, errorMessage);
+            // ..
+        });
+      */
 
       // Token creation
       const token = jwt.sign(
@@ -303,8 +320,13 @@ const register = async (req, res) => {
 
   
 
-/**--------------Login Admin-------------------- */
+/**--------------Login chauff-------------------- */
   
+/*
+
+
+
+*/
 const login = (req, res) => {
   const email = req.body.email;
   const password = req.body.password;

@@ -57,4 +57,4 @@ const UploadImage = (req, res, next) => {
       });
   };
   
-module.exports = UploadImage;
+module.exports =UploadImage ;
