@@ -5,7 +5,7 @@ const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 const {  createUserWithEmailAndPassword  } = require ('firebase/auth');
 const firebaseModule = require("../services/config");
-const auth = firebaseModule.admin;
+const auth = firebaseModule.firestoreApp;
 
 /**--------------------Ajouter un agnet------------------------  */
 
@@ -75,22 +75,16 @@ const register = async (req, res) => {
     try {
       await nouveauUtilisateur.save();
 ///
+const firestoreUserRef = auth.collection('chauffeurs').doc(nouveauUtilisateur._id.toString());
 
-await createUserWithEmailAndPassword(auth, email, mdpEncrypted)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log(user);
-            //navigate("/login")
-            // ...
-        })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(errorCode, errorMessage);
-            // ..
-        });
-      
+    await firestoreUserRef.set({
+      Nom: nouveauUtilisateur.Nom,
+      Prenom: nouveauUtilisateur.Prenom,
+      email: nouveauUtilisateur.email,
+      phone: nouveauUtilisateur.phone,
+      // Add other fields as needed
+    });
+
 
       // Token creation
       const token = jwt.sign(

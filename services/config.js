@@ -1,17 +1,30 @@
 // config.js
 
+// config.js
+
 const admin = require("firebase-admin");
 
-const serviceAccount = require("../firebase-key.json");
+const firestoreServiceAccount = require("../firebase.json"); // Assuming this is your storage key
+const storageServiceAccount  = require("../firebase-key.json");
+// Add a new JSON key for Firestore
 
-const BUCKET = "imagestor-768b5.appspot.com";
+const STORAGE_BUCKET = "imagestor-768b5.appspot.com";
 
-admin.initializeApp({
-  credential: admin.credential.cert(serviceAccount),
-  storageBucket: BUCKET,
-});
+// Initialize the Firebase instance for storage
+const storageApp = admin.initializeApp({
+  credential: admin.credential.cert(storageServiceAccount),
+  storageBucket: STORAGE_BUCKET,
+}, 'storageApp');
+
+// Initialize the Firebase instance for Firestore
+const firestoreApp = admin.initializeApp({
+  credential: admin.credential.cert(firestoreServiceAccount),
+  // Add other Firestore configurations here
+}, 'firestoreApp');
 
 module.exports = {
   admin,
-  BUCKET,
+  STORAGE_BUCKET,
+  storageApp, // Export the storage instance
+  firestoreApp, // Export the Firestore instance
 };

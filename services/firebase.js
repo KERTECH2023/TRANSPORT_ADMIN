@@ -1,8 +1,8 @@
 // UploadImage.js
 
-const { admin, BUCKET } = require('./config');
+const { storageApp, BUCKET } = require('./config');
 
-const bucket = admin.storage().bucket();
+const bucket = storageApp.storage().bucket();
 
 const UploadImage = (req, res, next) => {
   if (!req.files) return next();
