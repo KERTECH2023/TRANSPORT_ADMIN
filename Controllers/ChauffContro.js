@@ -5,8 +5,7 @@ const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 const {  createUserWithEmailAndPassword  } = require ('firebase/auth');
 const firebaseModule = require("../services/config");
-const auth = firebaseModule.firestoreApp;
-
+const auth = firebaseModule.firestoreApp.firestore();
 /**--------------------Ajouter un agnet------------------------  */
 
 const register = async (req, res) => {

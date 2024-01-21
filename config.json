@@ -1,4 +1,4 @@
 {
-    "database" : "mongodb+srv://mahdiibnelkarou:moDiUHfpi05YUAwO@cluster0.kmq7cnh.mongodb.net/",
+    "database" : "mongodb+srv://mahdibnelkaroui:MVnqI1q5tp2WctRU@cluster0.kmq7cnh.mongodb.net/",
     "token_secret" : "token-secret !!"
 }
