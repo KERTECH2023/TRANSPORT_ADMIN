@@ -20,6 +20,8 @@ const storageApp = admin.initializeApp({
 const firestoreApp = admin.initializeApp({
   credential: admin.credential.cert(firestoreServiceAccount),
   // Add other Firestore configurations here
+  databaseURL: "https://transport-app-36443-default-rtdb.firebaseio.com/"
+  
 }, 'firestoreApp');
 
 module.exports = {

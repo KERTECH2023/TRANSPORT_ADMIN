@@ -3,9 +3,8 @@ const bcrypt  =require('bcryptjs')
 const config = require("../config.json");
 const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-const {  createUserWithEmailAndPassword  } = require ('firebase/auth');
 const firebaseModule = require("../services/config");
-const auth = firebaseModule.firestoreApp.firestore();
+const realtimeDB = firebaseModule.firestoreApp.database();
 /**--------------------Ajouter un agnet------------------------  */
 
 const register = async (req, res) => {
@@ -74,15 +73,12 @@ const register = async (req, res) => {
     try {
       await nouveauUtilisateur.save();
 ///
-const firestoreUserRef = auth.collection('chauffeurs').doc(nouveauUtilisateur._id.toString());
+const userData = nouveauUtilisateur.toJSON();
 
-    await firestoreUserRef.set({
-      Nom: nouveauUtilisateur.Nom,
-      Prenom: nouveauUtilisateur.Prenom,
-      email: nouveauUtilisateur.email,
-      phone: nouveauUtilisateur.phone,
-      // Add other fields as needed
-    });
+// Set the driver's data in the Realtime Database under the user's ID
+await set(driversRef.child(nouveauUtilisateur._id.toString()), userData);
+
+
 
 
       // Token creation
