@@ -72,13 +72,10 @@ const register = async (req, res) => {
     // Save the new user to the database
     try {
       await nouveauUtilisateur.save();
-///
-const userData = nouveauUtilisateur.toJSON();
-
-// Set the driver's data in the Realtime Database under the user's ID
-await set(driversRef.child(nouveauUtilisateur._id.toString()), userData);
-
-
+ const driversRef = realtimeDB.ref('Drivers');
+driversRef.child(nouveauUtilisateur._id.toString()).set({
+  ...nouveauUtilisateur,
+});
 
 
       // Token creation
