@@ -3,7 +3,7 @@ const bcrypt  =require('bcryptjs')
 const config = require("../config.json");
 const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
-const firebaseModule = require("../services/config");
+//const firebaseModule = require("../services/config");
 //const realtimeDB = firebaseModule.firestoreApp.database();
 /**--------------------Ajouter un agnet------------------------  */
 
@@ -88,8 +88,12 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
       );
 
       // Send confirmation email
-      sendConfirmationEmail(email, Nom);
-
+      try {
+        const response = await sendConfirmationEmail(email, Nom);
+        console.log('Email sent successfully:', response);
+      } catch (error) {
+        console.error('Error sending email:', error);
+      }
       // Send response to the client
       res
         .status(201)
@@ -294,12 +298,15 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
       </html>`
     };
   
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
-      }
+    return new Promise((resolve, reject) => {
+      transporter.sendMail(mailOptions, function (error, info) {
+        if (error) {
+          reject(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+          resolve(info.response);
+        }
+      });
     });
   }
 

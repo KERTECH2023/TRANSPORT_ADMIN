@@ -4,7 +4,6 @@
 
 const admin = require("firebase-admin");
 
-const firestoreServiceAccount = require("../firebase.json"); // Assuming this is your storage key
 const storageServiceAccount  = require("../firebase-key.json");
 // Add a new JSON key for Firestore
 
@@ -17,16 +16,16 @@ const storageApp = admin.initializeApp({
 }, 'storageApp');
 
 // Initialize the Firebase instance for Firestore
-const firestoreApp = admin.initializeApp({
+/*const firestoreApp = admin.initializeApp({
   credential: admin.credential.cert(firestoreServiceAccount),
   // Add other Firestore configurations here
   databaseURL: "https://transport-app-36443-default-rtdb.firebaseio.com/"
   
 }, 'firestoreApp');
-
+*/
 module.exports = {
   admin,
   STORAGE_BUCKET,
   storageApp, // Export the storage instance
-  firestoreApp, // Export the Firestore instance
+  //firestoreApp, // Export the Firestore instance
 };
