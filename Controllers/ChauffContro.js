@@ -4,7 +4,7 @@ const config = require("../config.json");
 const jwt    =require('jsonwebtoken')
 const nodemailer = require('nodemailer');
 const firebaseModule = require("../services/config");
-const realtimeDB = firebaseModule.firestoreApp.database();
+//const realtimeDB = firebaseModule.firestoreApp.database();
 /**--------------------Ajouter un agnet------------------------  */
 
 const register = async (req, res) => {
@@ -72,10 +72,10 @@ const register = async (req, res) => {
     // Save the new user to the database
     try {
       await nouveauUtilisateur.save();
- const driversRef = realtimeDB.ref('Drivers');
+ /*const driversRef = realtimeDB.ref('Drivers');
 driversRef.child(nouveauUtilisateur._id.toString()).set({
   ...nouveauUtilisateur,
-});
+});*/
 
 
       // Token creation
