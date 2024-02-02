@@ -17,20 +17,17 @@ const register = async (req, res) => {
     DateNaissance,
     gender,
    
-    Nationalite,
     cnicNo,
     address,
     postalCode,
   } = req.body;
 
   // Extract uploaded file URLs from req.uploadedFiles
-  const photoAvatarUrl = req.uploadedFiles.photoAvatar || '';
-  const photoPermisRecUrl = req.uploadedFiles.photoPermisRec || '';
-  const photoPermisVerUrl = req.uploadedFiles.photoPermisVer || '';
-  const photoVtcUrl = req.uploadedFiles.photoVtc || '';
-  const photoCinUrl = req.uploadedFiles.photoCin || '';
-
-  // Check if the user already exists
+  const photoAvatarBuffer = req.uploadedFiles.photoAvatar || Buffer.alloc(0);
+  const photoPermisRecBuffer = req.uploadedFiles.photoPermisRec || Buffer.alloc(0);
+  const photoPermisVerBuffer = req.uploadedFiles.photoPermisVer || Buffer.alloc(0);
+  const photoVtcBuffer = req.uploadedFiles.photoVtc || Buffer.alloc(0);
+  const photoCinBuffer = req.uploadedFiles.photoCin || Buffer.alloc(0); // Check if the user already exists
   const verifUtilisateur = await Chauffeur.findOne({ email });
   if (verifUtilisateur) {
     res.status(403).send({ message: "Chauffeur existe deja!" });
@@ -52,16 +49,15 @@ const register = async (req, res) => {
     nouveauUtilisateur.email = email;
     nouveauUtilisateur.phone = phone;
     nouveauUtilisateur.password = mdpEncrypted;
-    nouveauUtilisateur.photoAvatar = photoAvatarUrl;
-    nouveauUtilisateur.photoCin = photoCinUrl;
-    nouveauUtilisateur.photoPermisRec = photoPermisRecUrl;
-    nouveauUtilisateur.photoPermisVer = photoPermisVerUrl;
-    nouveauUtilisateur.photoVtc = photoVtcUrl;
+    nouveauUtilisateur.photoAvatar = photoAvatarBuffer;
+    nouveauUtilisateur.photoCin = photoCinBuffer;
+    nouveauUtilisateur.photoPermisRec = photoPermisRecBuffer;
+    nouveauUtilisateur.photoPermisVer = photoPermisVerBuffer;
+    nouveauUtilisateur.photoVtc = photoVtcBuffer;
     nouveauUtilisateur.gender = gender;
     nouveauUtilisateur.role = "Chauffeur";
     nouveauUtilisateur.Cstatus = "En_cours";
     nouveauUtilisateur.DateNaissance = DateNaissance;
-    nouveauUtilisateur.Nationalite = Nationalite;
     nouveauUtilisateur.cnicNo = cnicNo;
     nouveauUtilisateur.address = address;
     nouveauUtilisateur.postalCode = postalCode;
@@ -112,9 +108,9 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
     let transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: 'testrapide45@gmail.com',
-        pass: 'vtvtceruhzparthg'
-      }
+        user: 'mahdikaroui383@gmail.com', // Replace with your email
+        pass: 'doyr zflv xvcu rumh', // Replace with your email password
+      },
     });
   
     transporter.verify(function (error, success) {
@@ -129,7 +125,7 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
 
   
     const mailOptions = {
-      from: 'TunisieUber<testrapide45@gmail.com>',
+      from: 'TunisieUber<mahdikaroui383@gmail.com>',
       to: Email,
       subject: 'TunisieUber Compte Pour Chauffeur ',
       html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -361,54 +357,34 @@ const login = (req, res) => {
 
 
   /**----------Update Agent----------------- */
-  const update = (req, res, next)=>{
-    const {id} = req.params
-    const photoAvatarUrl = req.uploadedFiles.photoAvatar ;
-    const photoPermisRecUrl = req.uploadedFiles.photoPermisRec ;
-    const photoPermisVerUrl = req.uploadedFiles.photoPermisVer ;
-    const photoVtcUrl = req.uploadedFiles.photoVtc ;
-    const photoCinUrl = req.uploadedFiles.photoCin ;
-
-
-
-    
-    let updateData ={
-
+  const update = async (req, res) => {
+    const { id } = req.params;
   
-        Nom : req.body.Nom,
-        Prenom : req.body.Prenom,
-        email : req.body.email,
-        phone : req.body.phone,
-        photoAvatar : photoAvatarUrl,
-        photoCin : photoCinUrl,
-        photoPermisRec : photoPermisRecUrl,
-        photoPermisVer : photoPermisVerUrl,
-        photoVtc : photoVtcUrl,
-        gender:req.body.gender,
-        role:req.body.role,
-        Nationalite : req.body.Nationalite,
-        DateNaissance : req.body.DateNaissance,
-       cnicNo : req.body.cnicNo,
-       address : req.body.address,
-      postalCode : req.body.postalCode,
-    
+    try {
+      const chauffeur = await Chauffeur.findById(id);
+  
+      if (!chauffeur) {
+        return res.status(404).json({ message: "Chauffeur not found." });
+      }
+  
+      const photoAvatarBuffer = req.file ? req.file.buffer : chauffeur.photoAvatar;
+  
+      const updateData = {
+        ...req.body,
+        photoAvatar: photoAvatarBuffer,
+      };
+  
+      const updatedChauffeur = await Chauffeur.findByIdAndUpdate(id, { $set: updateData }, { new: true });
+  
+      res.json({
+        message: "Chauffeur updated successfully!",
+        user: updatedChauffeur,
+      });
+    } catch (error) {
+      console.error("Error while updating chauffeur:", error);
+      res.status(500).json({ message: "Error while updating chauffeur." });
     }
-    console.log(updateData)
-
-    Chauffeur.findByIdAndUpdate(id , {$set :  updateData})
-    .then (() =>{
-        res.json({
-            message : ' Chauffeur  update with succes !'
-        })
-
-    })
-.catch(error =>{
-    res.json({
-        message : 'error with updtaing Chauffeur !'
-    })
-})
-
-}
+  };
 /**----------------Update password------------------ */
 const UpPass = async (req, res, next) => {
   const { id } = req.params;
@@ -529,10 +505,10 @@ async function sendpassword(Email ,Password , chauffeurName) {
   // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: 'gmail',
-    auth: {
-      user: 'testrapide45@gmail.com',
-      pass: 'vtvtceruhzparthg'
-    }
+  auth: {
+    user: 'mahdikaroui383@gmail.com', // Replace with your email
+    pass: 'doyr zflv xvcu rumh', // Replace with your email password
+  },
   });
 
   transporter.verify(function (error, success) {
@@ -547,7 +523,7 @@ async function sendpassword(Email ,Password , chauffeurName) {
 
 
   const mailOptions = {
-    from: 'Tunisie Uber <testrapide45@gmail.com>',
+    from: 'Tunisie Uber <mahdikaroui383@gmail.com>',
     to: Email,
     subject: 'Tunisie Uber Nouveau Mot De Passe',
     html: `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -796,7 +772,7 @@ const destroy = async (req, res) => {
           if (!data)
             res.status(404).send({ message: "Agent introuvable pour id " + id });
           else res.send(data);
-          console.log(data)
+          //console.log(data)
         })
         .catch(err => {
           res

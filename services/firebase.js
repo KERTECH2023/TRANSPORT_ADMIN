@@ -1,52 +1,60 @@
-// UploadImage.js
+var admin = require("firebase-admin");
 
-const { storageApp, BUCKET } = require('./config');
+var serviceAccount = require("../firebase-key.json");
 
-const bucket = storageApp.storage().bucket();
+const BUCKET ="imagestor-768b5.appspot.com"
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  storageBucket:BUCKET
+});
+
+
+const bucket = admin.storage().bucket();
 
 const UploadImage = (req, res, next) => {
-  if (!req.files) return next();
-
-  const files = req.files;
-  const uploadedFiles = {};
-
-  const uploadPromises = Object.keys(files).map((fieldName) => {
-    const file = files[fieldName][0];
-    const nomeArquivo = Date.now() + '.' + file.originalname.split('.').pop();
-    const bucketFile = bucket.file(nomeArquivo);
-    const stream = bucketFile.createWriteStream({
-      metadata: {
-        contentType: file.mimetype,
-      },
-    });
-
-    return new Promise((resolve, reject) => {
-      stream.on('error', (error) => {
-        reject(error);
+    if (!req.files) return next();
+  
+    const files = req.files;
+    const uploadedFiles = {};
+  
+    const uploadPromises = Object.keys(files).map((fieldName) => {
+      const file = files[fieldName][0];
+      const nomeArquivo = Date.now() + '.' + file.originalname.split('.').pop();
+      console.log(nomeArquivo);
+      const bucketFile = bucket.file(nomeArquivo);
+      const stream = bucketFile.createWriteStream({
+        metadata: {
+          contentType: file.mimetype,
+        },
       });
-
-      stream.on('finish', async () => {
-        await bucketFile.makePublic();
-
-        const firebaseUrl = `https://storage.googleapis.com/${BUCKET}/${nomeArquivo}`;
-        uploadedFiles[fieldName] = firebaseUrl;
-
-        resolve();
+  
+      return new Promise((resolve, reject) => {
+        stream.on('error', (error) => {
+          reject(error);
+        });
+  
+        stream.on('finish', async () => {
+          await bucketFile.makePublic();
+  
+          const firebaseUrl = `https://storage.googleapis.com/${BUCKET}/${nomeArquivo}`;
+          uploadedFiles[fieldName] = firebaseUrl;
+  
+          resolve();
+        });
+  
+        stream.end(file.buffer);
       });
-
-      stream.end(file.buffer);
     });
-  });
-
-  Promise.all(uploadPromises)
-    .then(() => {
-      req.uploadedFiles = uploadedFiles;
-      next();
-    })
-    .catch((error) => {
-      console.error(error);
-      next();
-    });
-};
-
+  
+    Promise.all(uploadPromises)
+      .then(() => {
+        req.uploadedFiles = uploadedFiles;
+        next();
+      })
+      .catch((error) => {
+        console.error(error);
+        next();
+      });
+  };
+  
 module.exports = UploadImage;

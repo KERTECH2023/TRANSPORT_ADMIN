@@ -64,30 +64,27 @@ const ChauffSchema = new mongoose.Schema(
             
         },
 
-        Nationalite: {
-            type: String,
-            trim: true,
-            required: [true, 'Please provide a Nationalite'],
-            default: '-'
-        },
+       
         photoAvatar: {
-            type: String,
+            type: Buffer,
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
         photoCin: {
-            type: String,
+            type: Buffer,
+
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
         photoPermisRec: {
-            type: String,
+            type: Buffer,
+            
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
         photoPermisVer: {
-            type: String,
+            type: Buffer,
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
         photoVtc: {
-            type: String,
+            type: Buffer,
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
        
