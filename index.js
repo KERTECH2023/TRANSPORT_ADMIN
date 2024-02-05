@@ -43,7 +43,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 const corsOptions ={
-  origin:'https://frontwebpfe-ashen.vercel.app', 
+ origin:'https://frontwebpfe-ashen.vercel.app', 
  // origin:'http://localhost:4000', 
   credentials:true,            //access-control-allow-credentials:true
   optionSuccessStatus:200

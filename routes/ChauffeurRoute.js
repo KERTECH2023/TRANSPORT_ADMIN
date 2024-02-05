@@ -18,13 +18,8 @@ const Multer = multer({
 }
 })
 
-const upload = multer({ storage:multer.memoryStorage(),
-  limits: {
-    fileSize: 10 * 1024 * 1024, // No larger than 10mb
-    fieldSize: 10 * 1024 * 1024, // No larger than 10mb
-}}); // Specify the destination folder for uploaded files
 
-router.put('/updatechauf/:id', upload.single("photoAvatar"), ChauffContro.update);
+router.put('/updatechauf/:id', Multer.single("photoAvatar"), ChauffContro.update);
 
 
 
