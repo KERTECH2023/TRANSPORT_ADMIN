@@ -6,7 +6,11 @@ const nodemailer = require('nodemailer');
 //const firebaseModule = require("../services/config");
 //const realtimeDB = firebaseModule.firestoreApp.database();
 /**--------------------Ajouter un agnet------------------------  */
-
+const admin = require('firebase-admin');
+const firestoreServiceAccount  = require("../firebase-key.json");
+// Add a new JSON key for Firestore
+admin.initializeApp({  credential: admin.credential.cert(firestoreServiceAccount),
+})
 const register = async (req, res) => {
   // Extract data from req.body
   const {
@@ -36,7 +40,7 @@ const register = async (req, res) => {
     const nouveauUtilisateur = new Chauffeur();
 
     // Hash the phone number as the password
-    const mdpEncrypted = bcrypt.hashSync(phone, 10);
+    const mdpEncrypted = bcrypt.hashSync(phone.toString(), 10);
 
     // Generate a random username
     const nounIndex = Math.floor(Math.random() * Nom.length);
@@ -90,10 +94,11 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
       } catch (error) {
         console.error('Error sending email:', error);
       }
+      const id=nouveauUtilisateur.id
       // Send response to the client
       res
         .status(201)
-        .send({ message: "success", user: nouveauUtilisateur, Token: token });
+        .send( id);
     } catch (error) {
       console.error("Error while saving user:", error);
       res.status(500).send({ message: "Error while saving user." });
@@ -310,7 +315,9 @@ driversRef.child(nouveauUtilisateur._id.toString()).set({
 
 /**--------------Login chauff-------------------- */
   
-/*
+/*[09:32] 
+Bahia LAMARI  (Invité) a été invité(e) à la réunion.
+
 
 
 
@@ -414,6 +421,15 @@ const UpPass = async (req, res, next) => {
     const updateData = {
       password: newPasswordHash,
     };
+    const chauffeurEmail=chauffeur.email
+    console.log('chauffeuremail:',chauffeurEmail )
+    const userRecord =  await admin.auth().getUserByEmail(chauffeurEmail);
+
+      // If the user exists, update the user's email and password
+    admin.auth().updateUser(userRecord.uid, {
+        email: chauffeurEmail,
+        password: newPassword,
+      });
 
     await Chauffeur.findByIdAndUpdate(id, { $set: updateData });
 
@@ -449,7 +465,7 @@ const updatestatus = async (req, res, next) => {
       });
     }
 
-    console.log(chauffeurUpdated);
+    //console.log(chauffeurUpdated);
 
     return res.status(200).send({
       message: "Chauffeur was Disabled successfully!"
@@ -481,6 +497,16 @@ const resetPassword = async (req, res) =>{
     // Generate a new password (you may use your own logic here)
     const newPassword = await generateNewPassword();
     const mdpEncrypted = bcrypt.hashSync(newPassword.toString(), 10);
+    const chauffeurEmail=chauffeur.email
+    console.log('chauffeuremail:',chauffeurEmail )
+    const userRecord =  await admin.auth().getUserByEmail(chauffeurEmail);
+console.log(newPassword)
+      // If the user exists, update the user's email and password
+    admin.auth().updateUser(userRecord.uid, {
+        email: chauffeurEmail,
+        password: newPassword,
+      });
+
 
     // Update the chauffeur's password
     chauffeur.password = mdpEncrypted;

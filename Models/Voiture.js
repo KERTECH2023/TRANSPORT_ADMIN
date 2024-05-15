@@ -17,11 +17,11 @@ const VoitSchema = new mongoose.Schema(
         },
 
         cartegrise: {
-            type: String,
+            type: Buffer,
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
         assurance: {
-            type: String,
+            type: Buffer,
             // default: 'https://storage.googleapis.com/imagestor-768b5.appspot.com/1677485204106.jpg'
         },
 
